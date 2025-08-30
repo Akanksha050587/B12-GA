@@ -4,14 +4,29 @@ on:
   push:
 
 jobs:
-  job1: 
-    runs-on: ubuntu-latest 
-    
-    steps: 
-        - run: echo "This is Job 1" 
-    
-  job2: 
-    runs-on: ubuntu-latest 
-    needs: job1 
-    steps: 
-        - run: echo "This is Job 2"
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create a file
+        run: echo "Hello from build!" > output.txt
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: output.txt
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
+
+      - name: Use artifact
+        run: cat output.txt
