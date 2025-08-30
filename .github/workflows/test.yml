@@ -1,4 +1,4 @@
-name: Multiple Jobs Example
+name: Matrix Example
 
 on:
   push:
@@ -6,27 +6,17 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14, 16, 18]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Create a file
-        run: echo "Hello from build!" > output.txt
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
         with:
-          name: build-output
-          path: output.txt
+          node-version: ${{ matrix.node-version }}
 
-  test:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: build-output
-
-      - name: Use artifact
-        run: cat output.txt
+      - name: Check Node.js version
+        run: node -v
