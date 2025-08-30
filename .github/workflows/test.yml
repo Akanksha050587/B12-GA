@@ -7,4 +7,5 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - run: echo " 1st workflow..."
+      - name: Testing phase
+        run: echo " testing..."
